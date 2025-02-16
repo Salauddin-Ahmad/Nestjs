@@ -7,7 +7,7 @@ import {
   ParseIntPipe,
   Post,
   Query,
-  UsePipes,
+  Patch, // Add this import
   ValidationPipe,
 } from '@nestjs/common';
 import { CreatePropertyDto } from './dto/createProperty.dto';
@@ -29,8 +29,37 @@ export class PropertyController {
     return `${this.constructor.name} ${id} ${slug}`;
   }
   @Post()
-  @UsePipes(new ValidationPipe())
-  create(@Body() body: CreatePropertyDto) {
+  // @UsePipes(
+  //   new ValidationPipe({
+  //     whitelist: true,
+  //     forbidNonWhitelisted: true,
+  //   }),
+  // ) // used directly in the body below
+  create(
+    @Body(
+      new ValidationPipe({
+        whitelist: true,
+        forbidNonWhitelisted: true,
+        groups: ['create'],
+      }),
+    )
+    body: CreatePropertyDto,
+  ) {
+    return body;
+  }
+  @Patch(':id')
+  update(
+    @Param('id', ParseIntPipe) id,
+    @Body(
+      new ValidationPipe({
+        whitelist: true,
+        forbidNonWhitelisted: true,
+        groups: ['update'],
+        always: true,
+      }),
+    )
+    body: CreatePropertyDto,
+  ) {
     return body;
   }
 }
