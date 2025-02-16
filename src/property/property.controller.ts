@@ -1,3 +1,4 @@
+import { RequestHeader } from './pipes/request-header';
 import {
   Controller,
   Get,
@@ -6,10 +7,10 @@ import {
   Param,
   Query,
   Body,
-  ValidationPipe,
   ParseIntPipe,
   ParseBoolPipe,
   UsePipes,
+  ValidationPipe,
 } from '@nestjs/common';
 import { CreatePropertyDto } from './dto/createProperty.dto';
 import {
@@ -17,6 +18,7 @@ import {
   CreatePropertyZodDto,
 } from './dto/createPropertyZod.dto';
 import { ZodValidationPipe } from './pipes/zodValidationPipe';
+import { HeadersDto } from './dto/headers.dto';
 
 @Controller('property')
 export class PropertyController {
@@ -48,16 +50,17 @@ export class PropertyController {
   @Patch(':id')
   update(
     @Param('id', ParseIntPipe) id: number,
-    @Body(
+    @Body()
+    body: CreatePropertyDto,
+    @RequestHeader(
       new ValidationPipe({
         whitelist: true,
-        forbidNonWhitelisted: true,
-        groups: ['update'],
+        validateCustomDecorators: true,
       }),
     )
-    body: CreatePropertyDto,
+    header: HeadersDto,
   ) {
     // Add your update logic here
-    return body;
+    return header;
   }
 }
