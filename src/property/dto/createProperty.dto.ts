@@ -6,7 +6,7 @@ export class CreatePropertyDto {
   name!: string; // No more error
 
   @IsString()
-  @Length(2, 10, { groups: ['create'] })
+  @Length(2, 40, { groups: ['create'] })
   @Length(2, 40, { groups: ['update'] })
   description!: string;
 
