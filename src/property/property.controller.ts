@@ -19,12 +19,17 @@ import {
 } from './dto/createPropertyZod.dto';
 import { ZodValidationPipe } from './pipes/zodValidationPipe';
 import { HeadersDto } from './dto/headers.dto';
+import { PropertyService } from './property.service';
 
 @Controller('property')
 export class PropertyController {
+  constructor(private propertyService: PropertyService) {
+    // this.propertyService = propertyService;
+  }
+
   @Get()
   findAll() {
-    return 'All properties';
+    return this.propertyService.findAll();
   }
 
   @Get(':id/:slug')
@@ -35,7 +40,8 @@ export class PropertyController {
   ) {
     // console.log(typeof id); //number
     console.log(typeof sort); //boolean
-    return `${this.constructor.name} ${id} ${slug}`;
+    // return `${this.constructor.name} ${id} ${slug}`;
+    return this.propertyService.findOne();
   }
 
   @Post()
@@ -44,7 +50,7 @@ export class PropertyController {
     @Body()
     body: CreatePropertyZodDto,
   ) {
-    return body;
+    return this.propertyService.create();
   }
 
   @Patch(':id')
@@ -61,6 +67,6 @@ export class PropertyController {
     header: HeadersDto,
   ) {
     // Add your update logic here
-    return header;
+    return this.propertyService.update();
   }
 }
