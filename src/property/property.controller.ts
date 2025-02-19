@@ -46,11 +46,8 @@ export class PropertyController {
 
   @Post()
   @UsePipes(new ZodValidationPipe(createPropertySchema))
-  create(
-    @Body()
-    body: CreatePropertyZodDto,
-  ) {
-    return this.propertyService.create();
+  create(@Body() dto: CreatePropertyZodDto) {
+    return this.propertyService.create(dto);
   }
 
   @Patch(':id')
