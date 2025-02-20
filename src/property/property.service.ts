@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Property } from 'src/entities/property.entity';
 import { Repository } from 'typeorm';
@@ -12,7 +12,12 @@ export class PropertyService {
   async findAll() {}
   async findOne() {}
   async create(dto: CreatePropertyDto) {
-    return await this.propertyRepo.save(dto);
+    try {
+      return await this.propertyRepo.save(dto);
+    } catch (error) {
+      console.error('Error creating property:', error);
+      throw new InternalServerErrorException('Failed to create property');
+    }
   }
   async update() {}
 }
