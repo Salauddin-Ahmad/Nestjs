@@ -13,7 +13,8 @@ export class PropertyService {
   async findOne() {}
   async create(dto: CreatePropertyDto) {
     try {
-      return await this.propertyRepo.save(dto);
+      const property = this.propertyRepo.create(dto);
+      return await this.propertyRepo.save(property);
     } catch (error) {
       console.error('Error creating property:', error);
       throw new InternalServerErrorException('Failed to create property');

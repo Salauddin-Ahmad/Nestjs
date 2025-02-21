@@ -46,7 +46,8 @@ export class PropertyController {
 
   @Post()
   @UsePipes(new ZodValidationPipe(createPropertySchema))
-  create(@Body() dto: CreatePropertyZodDto) {
+  async create(@Body() dto: CreatePropertyZodDto) {
+    console.log('Received DTO:', dto); // Debugging
     return this.propertyService.create(dto);
   }
 

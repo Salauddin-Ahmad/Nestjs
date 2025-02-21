@@ -3,14 +3,17 @@ import {
   ArgumentMetadata,
   BadRequestException,
 } from '@nestjs/common';
-import { ZodSchema, ZodError } from 'zod';
+import { ZodSchema } from 'zod';
 
 export class ZodValidationPipe implements PipeTransform {
   constructor(private schema: ZodSchema) {}
 
   transform(value: unknown, metadata: ArgumentMetadata) {
     const parsedValue = this.schema.safeParse(value);
-    if (parsedValue.success) return parsedValue;
-    throw new BadRequestException(parsedValue.error.format());
+    if (!parsedValue.success) {
+      throw new BadRequestException(parsedValue.error.format());
+    }
+    console.log(value, parsedValue);
+    return parsedValue.data; // Ensure only validated data is passed forward
   }
 }
