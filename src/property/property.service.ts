@@ -1,8 +1,14 @@
-import { Injectable, InternalServerErrorException } from '@nestjs/common';
+import {
+  Delete,
+  Injectable,
+  InternalServerErrorException,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Property } from 'src/entities/property.entity';
 import { Repository } from 'typeorm';
 import { CreatePropertyDto } from './dto/createProperty.dto';
+import { UpdatePropertyDto } from './dto/updateProperty.dto';
 
 @Injectable()
 export class PropertyService {
@@ -11,18 +17,38 @@ export class PropertyService {
   ) {}
   async findAll() {}
   async findOne(id: number) {
-    return await this.propertyRepo.findOne({
+    const property = await this.propertyRepo.findOne({
       where: { id },
     });
-  }
-  async create(dto: CreatePropertyDto) {
-    try {
-      const property = this.propertyRepo.create(dto);
-      return await this.propertyRepo.save(property);
-    } catch (error) {
-      console.error('Error creating property:', error);
-      throw new InternalServerErrorException('Failed to create property');
+    if (!Property) {
+      throw new NotFoundException('Property not found');
     }
+    return property;
   }
-  async update() {}
+  // async create(dto: CreatePropertyDto) {
+  //   // Best practice: Convert the plain DTO into a Property entity instance.
+  //   // This ensures that all entity defaults, validations, and lifecycle hooks are applied.
+  //   const property = this.propertyRepo.create(dto);
+  //   return await this.propertyRepo.save(property);
+  // }
+  async create(dto: CreatePropertyDto) {
+    console.log('DTO before create:', dto);
+
+    // Convert DTO to an entity instance
+    const property = this.propertyRepo.create(dto);
+    console.log('Entity after create:', property);
+
+    // Save and check the final stored entity
+    const savedProperty = await this.propertyRepo.save(property);
+    console.log('Saved Property:', savedProperty);
+
+    return savedProperty;
+  }
+
+  async update(id: number, dto: UpdatePropertyDto) {
+    return await this.propertyRepo.update({ id }, dto);
+  }
+  async delete(id: number) {
+    return await this.propertyRepo.delete({ id });
+  }
 }

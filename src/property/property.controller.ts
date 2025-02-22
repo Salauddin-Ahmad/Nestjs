@@ -1,25 +1,27 @@
-import { RequestHeader } from './pipes/request-header';
+import { ParsedIdPipe } from './pipes/parsedIdpipes';
+// import { RequestHeader } from './pipes/request-header';
+// import { CreatePropertyDto } from './dto/createProperty.dto';
 import {
   Controller,
   Get,
   Post,
   Patch,
   Param,
-  Query,
+  // Query,
+  // ParseBoolPipe,
+  // ValidationPipe,
   Body,
   ParseIntPipe,
-  ParseBoolPipe,
   UsePipes,
-  ValidationPipe,
+  Delete,
 } from '@nestjs/common';
-import { CreatePropertyDto } from './dto/createProperty.dto';
 import {
   createPropertySchema,
   CreatePropertyZodDto,
 } from './dto/createPropertyZod.dto';
 import { ZodValidationPipe } from './pipes/zodValidationPipe';
-import { HeadersDto } from './dto/headers.dto';
 import { PropertyService } from './property.service';
+import { UpdatePropertyDto } from './dto/updateProperty.dto';
 
 @Controller('property')
 export class PropertyController {
@@ -39,7 +41,7 @@ export class PropertyController {
 
   @Post()
   @UsePipes(new ZodValidationPipe(createPropertySchema))
-  async create(@Body() dto: CreatePropertyZodDto) {
+  create(@Body() dto: CreatePropertyZodDto) {
     console.log('Received DTO:', dto); // Debugging
     return this.propertyService.create(dto);
   }
@@ -48,16 +50,12 @@ export class PropertyController {
   update(
     @Param('id', ParseIntPipe) id: number,
     @Body()
-    body: CreatePropertyDto,
-    @RequestHeader(
-      new ValidationPipe({
-        whitelist: true,
-        validateCustomDecorators: true,
-      }),
-    )
-    header: HeadersDto,
+    body: UpdatePropertyDto,
   ) {
-    // Add your update logic here
-    return this.propertyService.update();
+    return this.propertyService.update(id, body);
+  }
+  @Delete(':id')
+  delete(@Param('id', ParsedIdPipe) id: number) {
+    return this.propertyService.delete(id);
   }
 }
