@@ -32,16 +32,9 @@ export class PropertyController {
     return this.propertyService.findAll();
   }
 
-  @Get(':id/:slug')
-  findOne(
-    @Param('id', ParseIntPipe) id: number,
-    @Param('slug') slug: string,
-    @Query('sort', ParseBoolPipe) sort: boolean,
-  ) {
-    // console.log(typeof id); //number
-    console.log(typeof sort); //boolean
-    // return `${this.constructor.name} ${id} ${slug}`;
-    return this.propertyService.findOne();
+  @Get(':id')
+  findOne(@Param('id', ParseIntPipe) id: number) {
+    return this.propertyService.findOne(id);
   }
 
   @Post()

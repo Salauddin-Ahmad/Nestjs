@@ -10,7 +10,11 @@ export class PropertyService {
     @InjectRepository(Property) private propertyRepo: Repository<Property>,
   ) {}
   async findAll() {}
-  async findOne() {}
+  async findOne(id: number) {
+    return await this.propertyRepo.findOne({
+      where: { id },
+    });
+  }
   async create(dto: CreatePropertyDto) {
     try {
       const property = this.propertyRepo.create(dto);
