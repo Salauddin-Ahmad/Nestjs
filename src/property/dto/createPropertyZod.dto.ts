@@ -7,5 +7,4 @@ export const createPropertySchema = z
     area: z.number().gt(0, { message: 'Area must be greater than 0' }),
   })
   .required();
-
 export type CreatePropertyZodDto = z.infer<typeof createPropertySchema>;
